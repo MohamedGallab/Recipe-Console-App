@@ -22,6 +22,7 @@ string recipesFile = "Recipes.json";
 string jsonRecipesString;
 var recipesList = new List<Recipe>();
 var availableRecipes = new List<string>();
+
 if (File.Exists(recipesFile))
 {
 	if (new FileInfo(recipesFile).Length > 0)
@@ -126,6 +127,7 @@ void AddRecipe()
 	recipesList.Add(recipe);
 	UpdateAvailableRecipes();
 }
+
 void RemoveRecipe()
 {
 	if (availableRecipes.Count > 0)
@@ -147,11 +149,13 @@ void RemoveRecipe()
 
 	UpdateAvailableRecipes();
 }
+
 // incomplete
 void EditRecipe()
 {
 	UpdateAvailableRecipes();
 }
+
 void AddCategory()
 {
 	var category = new Category()
@@ -161,6 +165,7 @@ void AddCategory()
 	categoriesList.Add(category);
 	UpdateAvailablecategories();
 }
+
 void RemoveCategory()
 {
 	if (availablecategories.Count > 0)
@@ -182,6 +187,7 @@ void RemoveCategory()
 	
 	UpdateAvailablecategories();
 }
+
 // incomplete
 void EditCategory()
 {
@@ -189,6 +195,7 @@ void EditCategory()
 	Category result = categoriesList.Find(category => category.Name == name);
 	UpdateAvailablecategories();
 }
+
 void ListRecipes()
 {
 	var table = new Table();
@@ -212,11 +219,13 @@ void ListRecipes()
 	}
 	AnsiConsole.Write(table);
 }
+
 void Save()
 {
 	File.WriteAllText(recipesFile, JsonSerializer.Serialize(recipesList));
 	File.WriteAllText(categoriesFile, JsonSerializer.Serialize(categoriesList));
 }
+
 void UpdateAvailablecategories()
 {
 	availablecategories.Clear();
@@ -225,6 +234,7 @@ void UpdateAvailablecategories()
 		availablecategories.Add(category.Name);
 	}
 }
+
 void UpdateAvailableRecipes()
 {
 	availableRecipes.Clear();
