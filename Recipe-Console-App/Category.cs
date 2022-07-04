@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Recipe_Console_App
+namespace Recipe_Console_App;
+internal class Category
 {
-	internal class Category
-	{
-		public string Name { get; set; }
-	}
+	public string Title { get; set; } = String.Empty;
 }
+

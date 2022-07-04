@@ -3,10 +3,11 @@ using Spectre.Console;
 using System.Text;
 using System.Text.Json;
 
+// load previous categories if exists
 string categoriesFile = "categories.json";
 string jsoncategoriesString;
 var categoriesList = new List<Category>();
-var availablecategories = new List<string>();
+var availableCategories = new List<string>();
 
 if (File.Exists(categoriesFile))
 {
@@ -18,6 +19,7 @@ if (File.Exists(categoriesFile))
 	}
 }
 
+// load previous recipes if exists
 string recipesFile = "Recipes.json";
 string jsonRecipesString;
 var recipesList = new List<Recipe>();
@@ -32,6 +34,13 @@ if (File.Exists(recipesFile))
 		UpdateAvailableRecipes();
 	}
 }
+
+var favorites = AnsiConsole.Prompt(
+    new SelectionPrompt<Recipe>()
+        .PageSize(10)
+        .Title("What are your [green]favorite fruits[/]?")
+        .MoreChoicesText("[grey](Move up and down to reveal more fruits)[/]")
+        .AddChoices(recipesList));
 
 while (true)
 {
@@ -102,7 +111,7 @@ void AddRecipe()
 		instruction = AnsiConsole.Prompt(new TextPrompt<string>("Enter instruction: ").AllowEmpty());
 	};
 	var selectedcategories = new List<String>();
-	if (availablecategories.Count > 0)
+	if (availableCategories.Count > 0)
 	{
 		selectedcategories = AnsiConsole.Prompt(
 		new MultiSelectionPrompt<string>()
@@ -110,11 +119,12 @@ void AddRecipe()
 		.Title("Which [green]categories[/] does this recipe belong to?")
 		.MoreChoicesText("[grey](Move up and down to reveal more categories)[/]")
 		.InstructionsText("[grey](Press [blue]Space[/] to toggle a category, [green]Enter[/] to accept)[/]")
-		.AddChoices(availablecategories));
+		.AddChoices(availableCategories));
 
-		foreach (var category in selectedcategories)
+		foreach (var selectedCategory in selectedcategories)
 		{
-			categories.Add(new Category { Name = category });
+			Category result = categoriesList.Find(category => category.Title == selectedCategory);
+			categories.Add(result);
 		}
 	}
 	var recipe = new Recipe()
@@ -130,29 +140,71 @@ void AddRecipe()
 
 void RemoveRecipe()
 {
-	if (availableRecipes.Count > 0)
+	if (availableRecipes.Count == 0)
 	{
-		var selectedRecipes = AnsiConsole.Prompt(
-		new MultiSelectionPrompt<string>()
-		.PageSize(10)
-		.Title("Which [green]recipes[/] does this recipe belong to?")
-		.MoreChoicesText("[grey](Move up and down to reveal more recipes)[/]")
-		.InstructionsText("[grey](Press [blue]Space[/] to toggle a recipe, [green]Enter[/] to accept)[/]")
-		.AddChoices(availableRecipes));
-
-		foreach (var recipe in selectedRecipes)
-		{
-			Recipe result = recipesList.Find(x => x.Title == recipe);
-			recipesList.Remove(result);
-		}
+		AnsiConsole.MarkupLine("There are no Recipes");
+		return;
 	}
+	var selectedRecipes = AnsiConsole.Prompt(
+	new MultiSelectionPrompt<Recipe>()
+	.PageSize(10)
+	.Title("Which [green]recipes[/] does this recipe belong to?")
+	.MoreChoicesText("[grey](Move up and down to reveal more recipes)[/]")
+	.InstructionsText("[grey](Press [blue]Space[/] to toggle a recipe, [green]Enter[/] to accept)[/]")
+	.AddChoices(recipesList));
 
+	foreach (var recipe in selectedRecipes)
+	{
+		recipesList.Remove(recipe);
+	}
 	UpdateAvailableRecipes();
 }
 
-// incomplete
 void EditRecipe()
 {
+	if(availableRecipes.Count == 0)
+	{
+		AnsiConsole.MarkupLine("There are no Categories");
+		return;
+	}
+
+	var chosenRecipe = AnsiConsole.Prompt(
+	   new SelectionPrompt<string>()
+		   .Title("Which Recipe would you like to edit?")
+		   .AddChoices(availableRecipes));
+
+	var command = AnsiConsole.Prompt(
+	   new SelectionPrompt<string>()
+		   .Title("What would you like to do?")
+		   .AddChoices(new[]
+		   {
+			   "Edit title",
+			   "Edit Ingredients",
+			   "Edit Instructions",
+			   "Edit Categories"
+		   }));
+
+	AnsiConsole.Clear();
+	switch (command)
+	{
+		case "Edit title":
+			ListRecipes();
+			break;
+		case "Edit Ingredients":
+			AddRecipe();
+			break;
+		case "Edit Instructions":
+			RemoveRecipe();
+			break;
+		case "Edit Categories":
+			RemoveRecipe();
+			break;
+	}
+
+
+
+	var recipe = recipesList.Find(recipe => recipe.Title == chosenRecipe);
+
 	UpdateAvailableRecipes();
 }
 
@@ -160,7 +212,7 @@ void AddCategory()
 {
 	var category = new Category()
 	{
-		Name = AnsiConsole.Ask<string>("What is the [green]category[/] called?")
+		Title = AnsiConsole.Ask<string>("What is the [green]category[/] called?")
 	};
 	categoriesList.Add(category);
 	UpdateAvailablecategories();
@@ -168,31 +220,54 @@ void AddCategory()
 
 void RemoveCategory()
 {
-	if (availablecategories.Count > 0)
+	if (availableCategories.Count == 0)
 	{
-		var selectedcategories = AnsiConsole.Prompt(
-		new MultiSelectionPrompt<string>()
-		.PageSize(10)
-		.Title("Which [green]categories[/] does this recipe belong to?")
-		.MoreChoicesText("[grey](Move up and down to reveal more categories)[/]")
-		.InstructionsText("[grey](Press [blue]Space[/] to toggle a category, [green]Enter[/] to accept)[/]")
-		.AddChoices(availablecategories));
-
-		foreach (var category in selectedcategories)
-		{
-			Category result = categoriesList.Find(x => x.Name == category);
-			categoriesList.Remove(result);
-		}
+		AnsiConsole.MarkupLine("There are no Categories");
+		return;
 	}
-	
+	var selectedcategories = AnsiConsole.Prompt(
+	new MultiSelectionPrompt<string>()
+	.PageSize(10)
+	.Title("Which [green]categories[/] does this recipe belong to?")
+	.MoreChoicesText("[grey](Move up and down to reveal more categories)[/]")
+	.InstructionsText("[grey](Press [blue]Space[/] to toggle a category, [green]Enter[/] to accept)[/]")
+	.AddChoices(availableCategories));
+
+	foreach (var categoryName in selectedcategories)
+	{
+		Category result = categoriesList.Find(category => category.Title == categoryName);
+		foreach (var recipe in recipesList)
+		{
+			Category recipeResult = recipe.Categories.Find(category => category.Title == categoryName);
+			recipe.Categories.Remove(recipeResult);
+		}
+		categoriesList.Remove(result);
+	}
+
 	UpdateAvailablecategories();
 }
 
-// incomplete
 void EditCategory()
 {
-	var name = AnsiConsole.Ask<string>("What is the [green]category[/] called?");
-	Category result = categoriesList.Find(category => category.Name == name);
+	if (availableCategories.Count == 0)
+	{
+		AnsiConsole.MarkupLine("There are no Categories");
+		return;
+	}
+	var chosenCategory = AnsiConsole.Prompt(
+	   new SelectionPrompt<string>()
+		   .Title("Which Category would you like to edit?")
+		   .AddChoices(availableCategories));
+	String newCategoryName = AnsiConsole.Prompt(new TextPrompt<string>("What would you like to change the name to?"));
+
+	Category result = categoriesList.Find(category => category.Title == chosenCategory);
+	result.Title = newCategoryName;
+	foreach (var recipe in recipesList)
+	{
+		Category recipeResult = recipe.Categories.Find(category => category.Title == chosenCategory);
+		recipeResult.Title = newCategoryName;
+	}
+
 	UpdateAvailablecategories();
 }
 
@@ -202,7 +277,7 @@ void ListRecipes()
 	table.AddColumn("Recipe Name");
 	table.AddColumn("Ingredients");
 	table.AddColumn("Instructions");
-	table.AddColumn("categories");
+	table.AddColumn("Categories");
 
 	foreach (var recipe in recipesList)
 	{
@@ -214,7 +289,7 @@ void ListRecipes()
 			instructions.Append("- " + instruction + "\n");
 		var categories = new StringBuilder();
 		foreach (Category category in recipe.Categories)
-			categories.Append("- " + category.Name + "\n");
+			categories.Append("- " + category.Title + "\n");
 		table.AddRow(recipe.Title, ingredients.ToString(), instructions.ToString(), categories.ToString());
 	}
 	AnsiConsole.Write(table);
@@ -228,10 +303,10 @@ void Save()
 
 void UpdateAvailablecategories()
 {
-	availablecategories.Clear();
+	availableCategories.Clear();
 	foreach (Category category in categoriesList)
 	{
-		availablecategories.Add(category.Name);
+		availableCategories.Add(category.Title);
 	}
 }
 
