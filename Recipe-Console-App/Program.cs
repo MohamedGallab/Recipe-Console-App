@@ -178,11 +178,7 @@ void EditRecipe()
 			   "Edit title",
 			   "Edit Ingredients",
 			   "Edit Instructions",
-		   })
-		   .AddChoiceGroup("Edit Categories", new[]
-		   {
-			   "Add a Category",
-			   "Delete a Category",
+			   "Edit Categories"
 		   }));
 
 	AnsiConsole.Clear();
@@ -192,13 +188,35 @@ void EditRecipe()
 			chosenRecipe.Title = AnsiConsole.Ask<string>("What is the [green]recipe[/] called?");
 			break;
 		case "Edit Ingredients":
-			AddRecipe();
+			chosenRecipe.Ingredients.Clear();
+			AnsiConsole.MarkupLine("Enter all the [green]ingredients[/]. Once done, leave the ingredient field [red]empty[/] and press enter");
+			var ingredient = AnsiConsole.Ask<string>("Enter ingredient: ");
+			while (ingredient != "")
+			{
+				chosenRecipe.Ingredients.Add(ingredient);
+				ingredient = AnsiConsole.Prompt(new TextPrompt<string>("Enter ingredient: ").AllowEmpty());
+			};
 			break;
 		case "Edit Instructions":
-			RemoveRecipe();
+			chosenRecipe.Instructions.Clear();
+			AnsiConsole.MarkupLine("Enter all the [green]instructions[/]. Once done, leave the instruction field [red]empty[/] and press enter");
+			var instruction = AnsiConsole.Ask<string>("Enter instruction: ");
+			while (instruction != "")
+			{
+				chosenRecipe.Instructions.Add(instruction);
+				instruction = AnsiConsole.Prompt(new TextPrompt<string>("Enter instruction: ").AllowEmpty());
+			};
 			break;
 		case "Edit Categories":
-			RemoveRecipe();
+			var selectedcategories = AnsiConsole.Prompt(
+			new MultiSelectionPrompt<String>()
+			.PageSize(10)
+			.Title("Which [green]categories[/] does this recipe belong to?")
+			.MoreChoicesText("[grey](Move up and down to reveal more categories)[/]")
+			.InstructionsText("[grey](Press [blue]Space[/] to toggle a category, [green]Enter[/] to accept)[/]")
+			.AddChoices(categoriesList));
+
+			chosenRecipe.Categories = selectedcategories;
 			break;
 	}
 }
