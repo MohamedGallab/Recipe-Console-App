@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Recipe_Console_App;
+namespace RecipeConsoleApp;
 
 [TypeConverter(typeof(RecipeTypeConverter))]
 internal class Recipe
 {
-	public String Title { get; set; } = String.Empty;
+	public string Title { get; set; } = string.Empty;
 	public List<string> Ingredients { get; set; } = new();
 	public List<string> Instructions { get; set; } = new();
 	public List<string> Categories { get; set; } = new();

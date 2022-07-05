@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Recipe_Console_App;
+namespace RecipeConsoleApp;
 
 internal class RecipeTypeConverter : TypeConverter
 {

@@ -1,19 +1,19 @@
-﻿using Recipe_Console_App;
+﻿using RecipeConsoleApp;
 using Spectre.Console;
 using System.Text;
 using System.Text.Json;
 
 // load previous categories if exists
 string categoriesFile = "categories.json";
-string jsoncategoriesString;
+string jsonCategoriesString;
 var categoriesList = new List<string>();
 
 if (File.Exists(categoriesFile))
 {
 	if (new FileInfo(categoriesFile).Length > 0)
 	{
-		jsoncategoriesString = File.ReadAllText(categoriesFile);
-		categoriesList = JsonSerializer.Deserialize<List<String>>(jsoncategoriesString)!;
+		jsonCategoriesString = File.ReadAllText(categoriesFile);
+		categoriesList = JsonSerializer.Deserialize<List<string>>(jsonCategoriesString)!;
 	}
 }
 
@@ -123,7 +123,7 @@ void AddRecipe()
 	}
 
 	var selectedcategories = AnsiConsole.Prompt(
-	new MultiSelectionPrompt<String>()
+	new MultiSelectionPrompt<string>()
 	.PageSize(10)
 	.Title("Which [green]categories[/] does this recipe belong to?")
 	.MoreChoicesText("[grey](Move up and down to reveal more categories)[/]")
@@ -209,7 +209,7 @@ void EditRecipe()
 			break;
 		case "Edit Categories":
 			var selectedcategories = AnsiConsole.Prompt(
-			new MultiSelectionPrompt<String>()
+			new MultiSelectionPrompt<string>()
 			.PageSize(10)
 			.Title("Which [green]categories[/] does this recipe belong to?")
 			.MoreChoicesText("[grey](Move up and down to reveal more categories)[/]")
@@ -264,7 +264,7 @@ void EditCategory()
 		   .Title("Which Category would you like to edit?")
 		   .AddChoices(categoriesList));
 
-	String newCategoryName = AnsiConsole.Prompt(new TextPrompt<string>("What would you like to change the name to?"));
+	string newCategoryName = AnsiConsole.Prompt(new TextPrompt<string>("What would you like to change the name to?"));
 
 	categoriesList.Remove(chosenCategory);
 	categoriesList.Add(newCategoryName);
@@ -288,13 +288,13 @@ void ListRecipes()
 	foreach (var recipe in recipesList)
 	{
 		var ingredients = new StringBuilder();
-		foreach (String ingredient in recipe.Ingredients)
+		foreach (string ingredient in recipe.Ingredients)
 			ingredients.Append("- " + ingredient + "\n");
 		var instructions = new StringBuilder();
-		foreach (String instruction in recipe.Instructions)
+		foreach (string instruction in recipe.Instructions)
 			instructions.Append("- " + instruction + "\n");
 		var categories = new StringBuilder();
-		foreach (String category in recipe.Categories)
+		foreach (string category in recipe.Categories)
 			categories.Append("- " + category + "\n");
 		table.AddRow(recipe.Title, ingredients.ToString(), instructions.ToString(), categories.ToString());
 	}
