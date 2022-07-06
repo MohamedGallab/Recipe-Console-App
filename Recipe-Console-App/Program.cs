@@ -117,6 +117,8 @@ void AddRecipe()
 		Categories = categories
 	};
 
+	recipesList.Add(recipe);
+
 	if (categoriesList.Count == 0)
 	{
 		return;
@@ -131,8 +133,6 @@ void AddRecipe()
 	.AddChoices(categoriesList));
 
 	recipe.Categories = selectedcategories;
-
-	recipesList.Add(recipe);
 }
 
 void RemoveRecipe()
@@ -156,7 +156,6 @@ void RemoveRecipe()
 	}
 }
 
-// incomplete
 void EditRecipe()
 {
 	if (recipesList.Count == 0)
