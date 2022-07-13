@@ -160,7 +160,7 @@ void EditRecipe()
 {
 	if (recipesList.Count == 0)
 	{
-		AnsiConsole.MarkupLine("There are no Categories");
+		AnsiConsole.MarkupLine("There are no Recipes");
 		return;
 	}
 
