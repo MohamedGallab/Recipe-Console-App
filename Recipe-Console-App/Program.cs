@@ -3,7 +3,7 @@ using Spectre.Console;
 using System.Text;
 using System.Text.Json;
 
-// load previous categories if exists
+// load previous categories if it exists
 string categoriesFile = "categories.json";
 string jsonCategoriesString;
 var categoriesList = new List<string>();
@@ -17,7 +17,7 @@ if (File.Exists(categoriesFile))
 	}
 }
 
-// load previous recipes if exists
+// load previous recipes if it exists
 string recipesFile = "Recipes.json";
 string jsonRecipesString;
 var recipesList = new List<Recipe>();
