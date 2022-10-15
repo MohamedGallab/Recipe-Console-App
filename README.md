@@ -7,6 +7,11 @@ A console application using .net 6.0 to allow the user to manage their recipes
 - [.NET 6.0](https://dotnet.microsoft.com/en-us/download)
 - [Spectre.Console](https://spectreconsole.net/)
 
+## What I learned
+- what .net is
+- how to use NuGet
+- how to make a console app
+
 ## Screenshots
 
 - Homescreen
